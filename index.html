@@ -288,21 +288,22 @@
       }
     }
 
-    async function handleLogin(e) {
-      e.preventDefault();
-      const user = document.getElementById("loginUser").value;
-      const pass = document.getElementById("loginPass").value;
+async function handleLogin(e) {
+  e.preventDefault();
+  // Aplicamos .trim() para evitar errores por espacios accidentales
+  const user = document.getElementById("loginUser").value.trim();
+  const pass = document.getElementById("loginPass").value.trim();
 
-      setLoading("btnLogin", "spinLogin", true);
-      const res = await apiCall("login", { user: user, pass: pass });
-      if (res && res.success) {
-        currentUser = { name: res.user, role: res.role };
-        initDashboard();
-      } else {
-        alert(res.message || "Credenciales inválidas.");
-      }
-      setLoading("btnLogin", "spinLogin", false);
-    }
+  setLoading("btnLogin", "spinLogin", true);
+  const res = await apiCall("login", { user: user, pass: pass });
+  if (res && res.success) {
+    currentUser = { name: res.user, role: res.role };
+    initDashboard();
+  } else {
+    alert(res.message || "Credenciales inválidas.");
+  }
+  setLoading("btnLogin", "spinLogin", false);
+}
 
     async function handleRegister(e) {
       e.preventDefault();
