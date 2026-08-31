@@ -263,34 +263,47 @@
       bootstrapModal = new bootstrap.Modal(document.getElementById('itemModal'));
     });
 
-    // Petición HTTP adaptada para evitar problemas de CORS/Redirección
-    async function apiCall(action, dataObj = {}) {
-      const payload = encodeURIComponent(JSON.stringify(dataObj));
-      const url = `${API_URL}?action=${action}&data=${payload}`;
-      const response = await fetch(url, { method: "GET", redirect: "follow" });
-      return await response.json();
+   // 1. Petición HTTP con control de errores y estructura JSON segura
+async function apiCall(action, dataObj = {}) {
+  try {
+    const payload = encodeURIComponent(JSON.stringify(dataObj));
+    const url = `${API_URL}?action=${action}&data=${payload}`;
+    const response = await fetch(url, { method: "GET", redirect: "follow" });
+    
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
     }
+    
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error en apiCall:", error);
+    return { success: false, message: error.message || "Error al conectar con el servidor." };
+  }
+}
 
-    async function handleLogin(e) {
-      e.preventDefault();
-      const user = document.getElementById("loginUser").value;
-      const pass = document.getElementById("loginPass").value;
+// 2. Control de Login validando la respuesta
+async function handleLogin(e) {
+  e.preventDefault();
+  const user = document.getElementById("loginUser").value;
+  const pass = document.getElementById("loginPass").value;
 
-      setLoading("btnLogin", "spinLogin", true);
-      try {
-        const res = await apiCall("login", { user: user, pass: pass });
-        if (res.success) {
-          currentUser = { name: res.user, role: res.role };
-          initDashboard();
-        } else {
-          alert(res.message);
-        }
-      } catch (err) {
-        alert("Error de conexión con la base de datos.");
-      } finally {
-        setLoading("btnLogin", "spinLogin", false);
-      }
+  setLoading("btnLogin", "spinLogin", true);
+  try {
+    const res = await apiCall("login", { user: user, pass: pass });
+    
+    if (res && res.success) {
+      currentUser = { name: res.user, role: res.role };
+      initDashboard();
+    } else {
+      alert(res.message || "Credenciales incorrectas o respuesta inválida del servidor.");
     }
+  } catch (err) {
+    alert("Error inesperado en el inicio de sesión.");
+  } finally {
+    setLoading("btnLogin", "spinLogin", false);
+  }
+}
 
     async function handleRegister(e) {
       e.preventDefault();
