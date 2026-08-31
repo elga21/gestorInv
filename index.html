@@ -4,11 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Gestor de Inventario CEDNAV</title>
-  <!-- Google Fonts & Bootstrap 5 -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-  <!-- PDF Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
@@ -18,77 +16,64 @@
       --navy-primary: #0f2537;
       --navy-secondary: #1e3a5f;
       --accent-blue: #2563eb;
-      --text-dark: #1e293b;
       --border-color: #e2e8f0;
     }
 
     body {
       background-color: var(--bg-light);
       font-family: 'Inter', sans-serif;
-      color: var(--text-dark);
+      color: #1e293b;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
-    /* Header Corporativo */
     .navbar-corporate {
       background-color: var(--navy-primary);
-      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
       border-bottom: 3px solid var(--accent-blue);
     }
 
     .navbar-brand {
       font-weight: 700;
-      font-size: 1.15rem;
-      letter-spacing: 0.5px;
+      font-size: 1.1rem;
       color: #ffffff !important;
     }
 
-    /* Cards & Layout */
-    .card-custom {
+    /* TARJETAS ULTRA COMPACTAS */
+    .card-compact {
       background: #ffffff;
       border: 1px solid var(--border-color);
-      border-radius: 8px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      border-radius: 6px;
+      transition: border-color 0.2s ease;
     }
 
-    .card-img-top {
-      height: 170px;
+    .card-compact:hover {
+      border-color: var(--accent-blue);
+    }
+
+    .thumb-img {
+      width: 75px;
+      height: 75px;
       object-fit: cover;
-      border-top-left-radius: 7px;
-      border-top-right-radius: 7px;
+      border-radius: 4px;
+      background-color: #f8fafc;
     }
 
     .badge-type {
       background-color: #e0e7ff;
       color: #3730a3;
       font-weight: 600;
-      font-size: 0.75rem;
-      padding: 0.35em 0.65em;
+      font-size: 0.68rem;
     }
 
-    /* Form & Auth */
     .auth-container {
-      max-width: 420px;
+      max-width: 400px;
       margin: 3rem auto;
-    }
-
-    .nav-pills .nav-link {
-      color: var(--navy-secondary);
-      font-weight: 500;
-    }
-
-    .nav-pills .nav-link.active {
-      background-color: var(--navy-primary);
-      color: #ffffff;
     }
 
     .btn-corporate {
       background-color: var(--navy-primary);
       color: #ffffff;
-      border: none;
-      font-weight: 500;
     }
 
     .btn-corporate:hover {
@@ -99,7 +84,7 @@
     .footer {
       background-color: #ffffff;
       border-top: 1px solid var(--border-color);
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: #64748b;
       margin-top: auto;
     }
@@ -107,7 +92,7 @@
 </head>
 <body>
 
-  <!-- NAVBAR CORPORATIVO -->
+  <!-- NAVBAR -->
   <nav class="navbar navbar-expand-lg navbar-dark navbar-corporate py-2">
     <div class="container-fluid px-4">
       <a class="navbar-brand d-flex align-items-center" href="#">
@@ -116,61 +101,58 @@
       </a>
       <div id="navUserContext" class="d-none ms-auto d-flex align-items-center">
         <span class="text-light fs-6 me-3" id="userInfoDisplay"></span>
-        <button class="btn btn-outline-light btn-sm" onclick="logout()"><i class="bi bi-box-arrow-right me-1"></i> Salir</button>
+        <button class="btn btn-outline-light btn-sm" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Salir</button>
       </div>
     </div>
   </nav>
 
-  <!-- CONTENEDOR PRINCIPAL -->
-  <div class="container my-4">
+  <div class="container-fluid px-4 my-3">
 
-    <!-- SECCIÓN DE AUTENTICACIÓN -->
+    <!-- AUTENTICACIÓN -->
     <div id="authSection" class="auth-container">
-      <div class="card card-custom p-4">
+      <div class="card card-compact p-4 shadow-sm">
         <div class="text-center mb-3">
-          <h5 class="fw-bold text-dark mb-1">Acceso a la Plataforma</h5>
-          <p class="text-muted small">Ingrese sus credenciales de acceso institucional</p>
+          <h5 class="fw-bold mb-1">Acceso a la Plataforma</h5>
+          <p class="text-muted small">Credenciales de acceso institucional</p>
         </div>
 
-        <ul class="nav nav-pills nav-justified mb-3" id="authTab">
+        <ul class="nav nav-pills nav-justified mb-3">
           <li class="nav-item">
-            <button class="nav-link active" id="login-tab" data-bs-toggle="pill" data-bs-target="#loginPane">Ingresar</button>
+            <button class="nav-link active py-1" id="login-tab" data-bs-toggle="pill" data-bs-target="#loginPane">Ingresar</button>
           </li>
           <li class="nav-item">
-            <button class="nav-link" id="register-tab" data-bs-toggle="pill" data-bs-target="#registerPane">Nuevo Usuario</button>
+            <button class="nav-link py-1" id="register-tab" data-bs-toggle="pill" data-bs-target="#registerPane">Nuevo Usuario</button>
           </li>
         </ul>
 
         <div class="tab-content">
-          <!-- LOGIN -->
           <div class="tab-pane fade show active" id="loginPane">
             <form onsubmit="handleLogin(event)">
-              <div class="mb-3">
+              <div class="mb-2">
                 <label class="form-label small fw-semibold">Usuario</label>
-                <input type="text" id="loginUser" class="form-control" placeholder="Ej: admin" required>
+                <input type="text" id="loginUser" class="form-control form-control-sm" required>
               </div>
               <div class="mb-3">
                 <label class="form-label small fw-semibold">Contraseña</label>
-                <input type="password" id="loginPass" class="form-control" placeholder="••••••••" required>
+                <input type="password" id="loginPass" class="form-control form-control-sm" required>
               </div>
-              <button type="submit" class="btn btn-corporate w-100 py-2" id="btnLogin">
+              <button type="submit" class="btn btn-corporate btn-sm w-100 py-2" id="btnLogin">
                 <span id="spinLogin" class="spinner-border spinner-border-sm d-none me-1"></span> Iniciar Sesión
               </button>
             </form>
           </div>
 
-          <!-- REGISTRO -->
           <div class="tab-pane fade" id="registerPane">
             <form onsubmit="handleRegister(event)">
-              <div class="mb-3">
+              <div class="mb-2">
                 <label class="form-label small fw-semibold">Usuario</label>
-                <input type="text" id="regUser" class="form-control" required>
+                <input type="text" id="regUser" class="form-control form-control-sm" required>
               </div>
               <div class="mb-3">
                 <label class="form-label small fw-semibold">Contraseña</label>
-                <input type="password" id="regPass" class="form-control" required>
+                <input type="password" id="regPass" class="form-control form-control-sm" required>
               </div>
-              <button type="submit" class="btn btn-success w-100 py-2" id="btnRegister">
+              <button type="submit" class="btn btn-success btn-sm w-100 py-2" id="btnRegister">
                 <span id="spinReg" class="spinner-border spinner-border-sm d-none me-1"></span> Registrarse
               </button>
             </form>
@@ -179,72 +161,104 @@
       </div>
     </div>
 
-    <!-- SECCIÓN APP PRINCIPAL -->
+    <!-- APP PRINCIPAL -->
     <div id="appSection" class="d-none">
-      <div class="d-flex flex-wrap justify-content-between align-items-center pb-3 mb-4 border-bottom">
+      
+      <!-- HEADER Y ACCIONES -->
+      <div class="d-flex flex-wrap justify-content-between align-items-center pb-2 mb-3 border-bottom">
         <div>
-          <h4 class="fw-bold mb-0">Inventario General</h4>
-          <span class="text-muted small">Gestión y control de elementos de laboratorio y equipos</span>
+          <h5 class="fw-bold mb-0">Control de Inventarios</h5>
+          <span class="text-muted small">Vista compacta de componentes y módulos</span>
         </div>
-        <div class="mt-2 mt-md-0">
-          <button class="btn btn-outline-secondary me-2" onclick="fetchInventory()"><i class="bi bi-arrow-repeat"></i> Sincronizar</button>
-          <button class="btn btn-outline-danger me-2" onclick="generatePDF()"><i class="bi bi-file-earmark-pdf"></i> Reporte PDF</button>
-          <button class="btn btn-corporate" onclick="openItemModal()"><i class="bi bi-plus-circle me-1"></i> Agregar Material</button>
+        <div class="mt-2 mt-md-0 d-flex gap-2">
+          <button class="btn btn-sm btn-outline-secondary" onclick="fetchInventory()"><i class="bi bi-arrow-repeat"></i> Sincronizar</button>
+          <button class="btn btn-sm btn-outline-danger" onclick="generatePDF()"><i class="bi bi-file-earmark-pdf"></i> Reporte PDF</button>
+          <button class="btn btn-sm btn-corporate" onclick="openItemModal()"><i class="bi bi-plus-circle me-1"></i> Agregar Material</button>
         </div>
       </div>
 
-      <!-- GRID DE ELEMENTOS -->
-      <div class="row" id="inventoryGrid"></div>
+      <!-- BARRA DE BÚSQUEDA Y FILTROS -->
+      <div class="card card-compact p-2 mb-3 bg-white">
+        <div class="row g-2">
+          <div class="col-md-5">
+            <div class="input-group input-group-sm">
+              <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+              <input type="text" id="searchInput" class="form-control" placeholder="Buscar por nombre o descripción..." oninput="applyFilters()">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <select id="filterModulo" class="form-select form-select-sm" onchange="applyFilters()">
+              <option value="">Todos los Módulos</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <select id="filterEstante" class="form-select form-select-sm" onchange="applyFilters()">
+              <option value="">Todos los Estantes</option>
+            </select>
+          </div>
+          <div class="col-md-1 d-flex align-items-center">
+            <button class="btn btn-sm btn-light w-100 border text-muted" onclick="resetFilters()" title="Limpiar Filtros"><i class="bi bi-x-circle"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CONTENEDOR DE PRODUCTOS COMPACTO -->
+      <div class="row g-2" id="inventoryGrid"></div>
     </div>
 
   </div>
 
-  <!-- MODAL PARA REGISTRAR/EDITAR MATERIAL -->
+  <!-- MODAL REGISTRO / EDICIÓN -->
   <div class="modal fade" id="itemModal" tabindex="-1">
-    <div class="modal-dialog">
-      <div class="modal-content card-custom">
-        <div class="modal-header">
-          <h5 class="modal-title fw-bold" id="itemModalLabel">Agregar Material</h5>
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content card-compact">
+        <div class="modal-header py-2">
+          <h6 class="modal-title fw-bold" id="itemModalLabel">Agregar Material</h6>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
-        <div class="modal-body">
+        <div class="modal-body py-2">
           <form id="itemForm">
             <input type="hidden" id="itemId">
             <div class="mb-2">
-              <label class="form-label small fw-semibold">Nombre del Material</label>
-              <input type="text" id="itemName" class="form-control" required>
+              <label class="form-label small fw-semibold mb-0">Nombre del Material</label>
+              <input type="text" id="itemName" class="form-control form-control-sm" required>
             </div>
             <div class="mb-2">
-              <label class="form-label small fw-semibold">Descripción</label>
-              <textarea id="itemDesc" class="form-control" rows="2"></textarea>
+              <label class="form-label small fw-semibold mb-0">Descripción</label>
+              <textarea id="itemDesc" class="form-control form-control-sm" rows="2"></textarea>
             </div>
-            <div class="row">
-              <div class="col-6 mb-2">
-                <label class="form-label small fw-semibold">Cantidad Inicial</label>
-                <input type="number" id="itemQty" class="form-control" min="0" required>
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label class="form-label small fw-semibold mb-0">Módulo</label>
+                <input type="text" id="itemModulo" class="form-control form-control-sm" placeholder="Ej: MODULO 9" required>
               </div>
-              <div class="col-6 mb-2">
-                <label class="form-label small fw-semibold">Categoría / Tipo</label>
-                <input type="text" id="itemType" class="form-control" placeholder="Ej: Electrónica" required>
+              <div class="col-6">
+                <label class="form-label small fw-semibold mb-0">Estante</label>
+                <input type="text" id="itemEstante" class="form-control form-control-sm" placeholder="Ej: ESTANTE D" required>
               </div>
             </div>
-            <div class="mb-2">
-              <label class="form-label small fw-semibold">Ubicación Física</label>
-              <input type="text" id="itemLoc" class="form-control" placeholder="Ej: Estante B1" required>
+            <div class="row g-2 mb-2">
+              <div class="col-6">
+                <label class="form-label small fw-semibold mb-0">Cantidad</label>
+                <input type="number" id="itemQty" class="form-control form-control-sm" min="0" required>
+              </div>
+              <div class="col-6">
+                <label class="form-label small fw-semibold mb-0">Categoría / Tipo</label>
+                <input type="text" id="itemType" class="form-control form-control-sm" placeholder="Ej: Electrónica" required>
+              </div>
             </div>
             <div class="mb-3">
-              <label class="form-label small fw-semibold">Enlace de Fotografía (URL)</label>
-              <input type="url" id="itemFoto" class="form-control" placeholder="https://...">
+              <label class="form-label small fw-semibold mb-0">Enlace de Fotografía (URL)</label>
+              <input type="url" id="itemFoto" class="form-control form-control-sm" placeholder="https://...">
             </div>
-            <button type="submit" class="btn btn-corporate w-100">Guardar Registro</button>
+            <button type="submit" class="btn btn-corporate btn-sm w-100">Guardar Registro</button>
           </form>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- FOOTER -->
-  <footer class="footer py-3 text-center">
+  <footer class="footer py-2 text-center">
     <div class="container">
       <span>Desarrollador: <strong>ING FERNANDO BEVANS</strong> | GESTOR INVENTARIO CEDNAV</span>
     </div>
@@ -252,58 +266,43 @@
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // URL DE TU DESPLIEGUE DE GOOGLE APPS SCRIPT
-    const API_URL = "https://script.google.com/macros/s/AKfycbz_nzT-_4Q_RlAkr2_r27T4Cw4tSvdHJsupZUrX5Ca0LwKwG2baaxqPE4rh03tEsHHS/exec";
+    const API_URL = "https://script.google.com/macros/s/AKfycbyeUlfAT5iEsb8hbWyuyCAmcjJfTxhztSvAF5DNOM04DerVNLl0edSVa6AQ0HZ1UYJw/exec";
 
     let currentUser = null;
     let inventoryData = [];
+    let filteredData = [];
     let bootstrapModal = null;
 
     document.addEventListener("DOMContentLoaded", () => {
       bootstrapModal = new bootstrap.Modal(document.getElementById('itemModal'));
     });
 
-   // 1. Petición HTTP con control de errores y estructura JSON segura
-async function apiCall(action, dataObj = {}) {
-  try {
-    const payload = encodeURIComponent(JSON.stringify(dataObj));
-    const url = `${API_URL}?action=${action}&data=${payload}`;
-    const response = await fetch(url, { method: "GET", redirect: "follow" });
-    
-    if (!response.ok) {
-      throw new Error(`Error HTTP: ${response.status}`);
+    async function apiCall(action, dataObj = {}) {
+      try {
+        const payload = encodeURIComponent(JSON.stringify(dataObj));
+        const url = `${API_URL}?action=${action}&data=${payload}`;
+        const response = await fetch(url, { method: "GET", redirect: "follow" });
+        return await response.json();
+      } catch (error) {
+        return { success: false, message: "Error al conectar con el servidor." };
+      }
     }
-    
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error en apiCall:", error);
-    return { success: false, message: error.message || "Error al conectar con el servidor." };
-  }
-}
 
-// 2. Control de Login validando la respuesta
-async function handleLogin(e) {
-  e.preventDefault();
-  const user = document.getElementById("loginUser").value;
-  const pass = document.getElementById("loginPass").value;
+    async function handleLogin(e) {
+      e.preventDefault();
+      const user = document.getElementById("loginUser").value;
+      const pass = document.getElementById("loginPass").value;
 
-  setLoading("btnLogin", "spinLogin", true);
-  try {
-    const res = await apiCall("login", { user: user, pass: pass });
-    
-    if (res && res.success) {
-      currentUser = { name: res.user, role: res.role };
-      initDashboard();
-    } else {
-      alert(res.message || "Credenciales incorrectas o respuesta inválida del servidor.");
+      setLoading("btnLogin", "spinLogin", true);
+      const res = await apiCall("login", { user: user, pass: pass });
+      if (res && res.success) {
+        currentUser = { name: res.user, role: res.role };
+        initDashboard();
+      } else {
+        alert(res.message || "Credenciales inválidas.");
+      }
+      setLoading("btnLogin", "spinLogin", false);
     }
-  } catch (err) {
-    alert("Error inesperado en el inicio de sesión.");
-  } finally {
-    setLoading("btnLogin", "spinLogin", false);
-  }
-}
 
     async function handleRegister(e) {
       e.preventDefault();
@@ -311,18 +310,13 @@ async function handleLogin(e) {
       const pass = document.getElementById("regPass").value;
 
       setLoading("btnRegister", "spinReg", true);
-      try {
-        const res = await apiCall("registerUser", { user: user, pass: pass });
-        alert(res.message);
-        if (res.success) {
-          document.getElementById("regUser").value = "";
-          document.getElementById("regPass").value = "";
-        }
-      } catch (err) {
-        alert("Error al registrar usuario.");
-      } finally {
-        setLoading("btnRegister", "spinReg", false);
+      const res = await apiCall("registerUser", { user: user, pass: pass });
+      alert(res.message);
+      if (res && res.success) {
+        document.getElementById("regUser").value = "";
+        document.getElementById("regPass").value = "";
       }
+      setLoading("btnRegister", "spinReg", false);
     }
 
     function initDashboard() {
@@ -338,65 +332,95 @@ async function handleLogin(e) {
       document.getElementById("authSection").classList.remove("d-none");
       document.getElementById("appSection").classList.add("d-none");
       document.getElementById("navUserContext").classList.add("d-none");
-      document.getElementById("loginUser").value = "";
-      document.getElementById("loginPass").value = "";
     }
 
     async function fetchInventory() {
-      try {
-        const res = await apiCall("getInventory");
-        if (res.success) {
-          inventoryData = res.data;
-          renderInventory();
-        }
-      } catch (err) {
-        console.error("Error al obtener el inventario", err);
+      const res = await apiCall("getInventory");
+      if (res && res.success) {
+        inventoryData = res.data;
+        populateFilterDropdowns();
+        applyFilters();
       }
+    }
+
+    function populateFilterDropdowns() {
+      const modulos = [...new Set(inventoryData.map(item => item.modulo).filter(Boolean))].sort();
+      const estantes = [...new Set(inventoryData.map(item => item.estante).filter(Boolean))].sort();
+
+      const modSelect = document.getElementById("filterModulo");
+      const estSelect = document.getElementById("filterEstante");
+
+      modSelect.innerHTML = '<option value="">Todos los Módulos</option>' + modulos.map(m => `<option value="${m}">${m}</option>`).join('');
+      estSelect.innerHTML = '<option value="">Todos los Estantes</option>' + estantes.map(e => `<option value="${e}">${e}</option>`).join('');
+    }
+
+    function applyFilters() {
+      const search = document.getElementById("searchInput").value.toLowerCase();
+      const selectedModulo = document.getElementById("filterModulo").value;
+      const selectedEstante = document.getElementById("filterEstante").value;
+
+      filteredData = inventoryData.filter(item => {
+        const matchesSearch = (item.nombre || '').toLowerCase().includes(search) || (item.descripcion || '').toLowerCase().includes(search);
+        const matchesModulo = !selectedModulo || item.modulo === selectedModulo;
+        const matchesEstante = !selectedEstante || item.estante === selectedEstante;
+        return matchesSearch && matchesModulo && matchesEstante;
+      });
+
+      renderInventory();
+    }
+
+    function resetFilters() {
+      document.getElementById("searchInput").value = "";
+      document.getElementById("filterModulo").value = "";
+      document.getElementById("filterEstante").value = "";
+      applyFilters();
     }
 
     function renderInventory() {
       const grid = document.getElementById("inventoryGrid");
       grid.innerHTML = "";
 
-      if (inventoryData.length === 0) {
-        grid.innerHTML = `<div class="col-12 text-center py-5 text-muted"><i class="bi bi-inbox fs-1"></i><p>No hay registros disponibles en el inventario.</p></div>`;
+      if (filteredData.length === 0) {
+        grid.innerHTML = `<div class="col-12 text-center py-4 text-muted"><i class="bi bi-inbox fs-3"></i><p class="mb-0 small">No se encontraron elementos.</p></div>`;
         return;
       }
 
-      inventoryData.forEach(item => {
+      filteredData.forEach(item => {
         const isSuper = currentUser.role === 'Superusuario';
-        const imgPlaceholder = "https://via.placeholder.com/300x170?text=Sin+Fotografia";
+        const imgPlaceholder = "https://via.placeholder.com/75?text=Sin+Foto";
 
         const card = document.createElement("div");
-        card.className = "col-md-6 col-lg-4 mb-4";
+        card.className = "col-xl-4 col-md-6 col-12";
         card.innerHTML = `
-          <div class="card card-custom h-100">
-            <div class="position-relative">
-              <img src="${item.fotoUrl || imgPlaceholder}" class="card-img-top" onerror="this.src='${imgPlaceholder}'" alt="${item.nombre}">
-              <span class="badge badge-type position-absolute top-0 end-0 m-2">${item.tipo}</span>
-            </div>
-            <div class="card-body d-flex flex-column">
-              <h6 class="fw-bold text-dark mb-1">${item.nombre}</h6>
-              <p class="text-muted small mb-3 flex-grow-1">${item.descripcion || 'Sin descripción disponible.'}</p>
+          <div class="card card-compact p-2 h-100">
+            <div class="d-flex align-items-center gap-2">
+              <img src="${item.fotoUrl || imgPlaceholder}" class="thumb-img" onerror="this.src='${imgPlaceholder}'" alt="${item.nombre}">
               
-              <div class="bg-light p-2 rounded mb-3">
-                <div class="d-flex justify-content-between align-items-center mb-1">
-                  <span class="small text-muted fw-semibold">Cantidad:</span>
+              <div class="flex-grow-1 min-w-0">
+                <div class="d-flex justify-content-between align-items-start">
+                  <h6 class="fw-bold text-dark mb-0 text-truncate small">${item.nombre}</h6>
+                  <span class="badge badge-type ms-1">${item.tipo}</span>
+                </div>
+                <p class="text-muted small mb-1 text-truncate" style="font-size: 0.75rem;">${item.descripcion || 'Sin descripción'}</p>
+                
+                <div class="d-flex justify-content-between align-items-center bg-light p-1 rounded" style="font-size: 0.75rem;">
                   <div>
-                    <button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="changeQty(${item.id}, -1)">-</button>
-                    <span class="fw-bold mx-2">${item.cantidad}</span>
-                    <button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="changeQty(${item.id}, 1)">+</button>
+                    <span class="fw-semibold text-secondary">Ubicación:</span>
+                    <span class="fw-bold text-dark">${item.modulo || '-'} | ${item.estante || '-'}</span>
+                  </div>
+                  <div class="d-flex align-items-center">
+                    <button class="btn btn-sm btn-outline-secondary py-0 px-1" onclick="changeQty(${item.id}, -1)">-</button>
+                    <span class="fw-bold mx-1">${item.cantidad}</span>
+                    <button class="btn btn-sm btn-outline-secondary py-0 px-1" onclick="changeQty(${item.id}, 1)">+</button>
                   </div>
                 </div>
-                <div class="d-flex justify-content-between align-items-center">
-                  <span class="small text-muted fw-semibold">Ubicación:</span>
-                  <span class="small fw-semibold text-dark">${item.ubicacion}</span>
-                </div>
-              </div>
 
-              <div class="d-flex justify-content-between pt-2 border-top">
-                ${isSuper ? `<button class="btn btn-sm btn-outline-primary" onclick='editItem(${JSON.stringify(item)})'><i class="bi bi-pencil"></i> Editar</button>` : '<span></span>'}
-                ${isSuper ? `<button class="btn btn-sm btn-outline-danger" onclick="deleteItem(${item.id})"><i class="bi bi-trash"></i> Eliminar</button>` : ''}
+                ${isSuper ? `
+                  <div class="d-flex justify-content-end gap-1 mt-1">
+                    <button class="btn btn-link btn-sm text-primary p-0 text-decoration-none me-2" style="font-size: 0.72rem;" onclick='editItem(${JSON.stringify(item)})'><i class="bi bi-pencil"></i> Editar</button>
+                    <button class="btn btn-link btn-sm text-danger p-0 text-decoration-none" style="font-size: 0.72rem;" onclick="deleteItem(${item.id})"><i class="bi bi-trash"></i> Eliminar</button>
+                  </div>
+                ` : ''}
               </div>
             </div>
           </div>
@@ -416,9 +440,10 @@ async function handleLogin(e) {
       document.getElementById("itemId").value = item.id;
       document.getElementById("itemName").value = item.nombre;
       document.getElementById("itemDesc").value = item.descripcion;
+      document.getElementById("itemModulo").value = item.modulo || "";
+      document.getElementById("itemEstante").value = item.estante || "";
       document.getElementById("itemQty").value = item.cantidad;
       document.getElementById("itemType").value = item.tipo;
-      document.getElementById("itemLoc").value = item.ubicacion;
       document.getElementById("itemFoto").value = item.fotoUrl;
       document.getElementById("itemModalLabel").innerText = "Editar Material";
       bootstrapModal.show();
@@ -430,15 +455,16 @@ async function handleLogin(e) {
         id: document.getElementById("itemId").value || null,
         nombre: document.getElementById("itemName").value,
         descripcion: document.getElementById("itemDesc").value,
+        modulo: document.getElementById("itemModulo").value,
+        estante: document.getElementById("itemEstante").value,
         cantidad: Number(document.getElementById("itemQty").value),
         tipo: document.getElementById("itemType").value,
-        ubicacion: document.getElementById("itemLoc").value,
         fotoUrl: document.getElementById("itemFoto").value
       };
 
       const res = await apiCall("saveItem", { item: itemData, role: currentUser.role });
       alert(res.message);
-      if (res.success) {
+      if (res && res.success) {
         bootstrapModal.hide();
         fetchInventory();
       }
@@ -446,7 +472,7 @@ async function handleLogin(e) {
 
     async function changeQty(id, delta) {
       const res = await apiCall("updateQuantity", { id: id, delta: delta });
-      if (res.success) {
+      if (res && res.success) {
         fetchInventory();
       } else {
         alert(res.message);
@@ -454,37 +480,39 @@ async function handleLogin(e) {
     }
 
     async function deleteItem(id) {
-      if (!confirm("¿Confirma la eliminación definitiva del elemento?")) return;
+      if (!confirm("¿Confirma la eliminación del registro?")) return;
       const res = await apiCall("deleteItem", { id: id, role: currentUser.role });
       alert(res.message);
-      if (res.success) fetchInventory();
+      if (res && res.success) fetchInventory();
     }
 
     function generatePDF() {
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
 
-      doc.setFontSize(15);
+      doc.setFontSize(14);
       doc.text("GESTOR INVENTARIO CEDNAV", 14, 15);
       doc.setFontSize(9);
-      doc.text("Reporte Control de Inventario", 14, 22);
-      doc.text(`Fecha de emisión: ${new Date().toLocaleDateString()} | Desarrollador: ING FERNANDO BEVANS`, 14, 27);
+      doc.text("Reporte de Inventario de Componentes y Materiales", 14, 21);
+      doc.text(`Fecha: ${new Date().toLocaleDateString()} | Desarrollador: ING FERNANDO BEVANS`, 14, 26);
 
-      const tableRows = inventoryData.map(item => [
+      const tableRows = filteredData.map(item => [
         item.id,
         item.nombre,
         item.descripcion,
+        item.modulo || '-',
+        item.estante || '-',
         item.cantidad,
-        item.ubicacion,
         item.tipo
       ]);
 
       doc.autoTable({
-        head: [['ID', 'Nombre', 'Descripción', 'Cant.', 'Ubicación', 'Categoría']],
+        head: [['ID', 'Nombre', 'Descripción', 'Módulo', 'Estante', 'Cant.', 'Categoría']],
         body: tableRows,
-        startY: 32,
+        startY: 30,
         theme: 'stripe',
-        headStyles: { fillColor: [15, 37, 55] }
+        headStyles: { fillColor: [15, 37, 55] },
+        styles: { fontSize: 8 }
       });
 
       doc.save(`Inventario_CEDNAV_${new Date().toISOString().slice(0,10)}.pdf`);
