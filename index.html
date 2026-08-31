@@ -3,74 +3,177 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GESTOR INVENTARIO CEDNAV</title>
+  <title>Gestor de Inventario CEDNAV</title>
+  <!-- Google Fonts & Bootstrap 5 -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+  <!-- PDF Libraries -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
   <style>
-    body { background-color: #f4f6f9; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    .navbar-brand { font-weight: 700; letter-spacing: 1px; }
-    .card-img-top { height: 160px; object-fit: cover; }
-    .badge-role { position: absolute; top: 10px; right: 10px; }
-    .footer { font-size: 0.85rem; color: #6c757d; }
+    :root {
+      --bg-light: #f4f7fa;
+      --navy-primary: #0f2537;
+      --navy-secondary: #1e3a5f;
+      --accent-blue: #2563eb;
+      --text-dark: #1e293b;
+      --border-color: #e2e8f0;
+    }
+
+    body {
+      background-color: var(--bg-light);
+      font-family: 'Inter', sans-serif;
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header Corporativo */
+    .navbar-corporate {
+      background-color: var(--navy-primary);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+      border-bottom: 3px solid var(--accent-blue);
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 1.15rem;
+      letter-spacing: 0.5px;
+      color: #ffffff !important;
+    }
+
+    /* Cards & Layout */
+    .card-custom {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .card-img-top {
+      height: 170px;
+      object-fit: cover;
+      border-top-left-radius: 7px;
+      border-top-right-radius: 7px;
+    }
+
+    .badge-type {
+      background-color: #e0e7ff;
+      color: #3730a3;
+      font-weight: 600;
+      font-size: 0.75rem;
+      padding: 0.35em 0.65em;
+    }
+
+    /* Form & Auth */
+    .auth-container {
+      max-width: 420px;
+      margin: 3rem auto;
+    }
+
+    .nav-pills .nav-link {
+      color: var(--navy-secondary);
+      font-weight: 500;
+    }
+
+    .nav-pills .nav-link.active {
+      background-color: var(--navy-primary);
+      color: #ffffff;
+    }
+
+    .btn-corporate {
+      background-color: var(--navy-primary);
+      color: #ffffff;
+      border: none;
+      font-weight: 500;
+    }
+
+    .btn-corporate:hover {
+      background-color: var(--navy-secondary);
+      color: #ffffff;
+    }
+
+    .footer {
+      background-color: #ffffff;
+      border-top: 1px solid var(--border-color);
+      font-size: 0.85rem;
+      color: #64748b;
+      margin-top: auto;
+    }
   </style>
 </head>
 <body>
 
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="#"><i class="bi bi-box-seam-fill me-2"></i>GESTOR INVENTARIO CEDNAV</a>
-      <div id="navUserContext" class="d-flex align-items-center text-light d-none">
-        <span class="me-3" id="userInfoDisplay"></span>
-        <button class="btn btn-outline-light btn-sm" onclick="logout()"><i class="bi bi-box-arrow-right"></i> Salir</button>
+  <!-- NAVBAR CORPORATIVO -->
+  <nav class="navbar navbar-expand-lg navbar-dark navbar-corporate py-2">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand d-flex align-items-center" href="#">
+        <i class="bi bi-shield-lock-fill me-2 text-primary"></i>
+        <span>GESTOR INVENTARIO CEDNAV</span>
+      </a>
+      <div id="navUserContext" class="d-none ms-auto d-flex align-items-center">
+        <span class="text-light fs-6 me-3" id="userInfoDisplay"></span>
+        <button class="btn btn-outline-light btn-sm" onclick="logout()"><i class="bi bi-box-arrow-right me-1"></i> Salir</button>
       </div>
     </div>
   </nav>
 
+  <!-- CONTENEDOR PRINCIPAL -->
   <div class="container my-4">
 
-    <!-- SECCIÓN AUTHENTICATION -->
-    <div id="authSection" class="row justify-content-center">
-      <div class="col-md-5">
-        <div class="card shadow-sm">
-          <div class="card-body p-4">
-            <ul class="nav nav-pills nav-justified mb-3" id="authTab" role="tablist">
-              <li class="nav-item">
-                <button class="nav-link active" id="login-tab" data-bs-toggle="pill" data-bs-target="#loginPane">Ingresar</button>
-              </li>
-              <li class="nav-item">
-                <button class="nav-link" id="register-tab" data-bs-toggle="pill" data-bs-target="#registerPane">Registro</button>
-              </li>
-            </ul>
-            <div class="tab-content">
-              <div class="tab-pane fade show active" id="loginPane">
-                <form onsubmit="handleLogin(event)">
-                  <div class="mb-3">
-                    <label class="form-label">Usuario</label>
-                    <input type="text" id="loginUser" class="form-control" required>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label">Contraseña</label>
-                    <input type="password" id="loginPass" class="form-control" required>
-                  </div>
-                  <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
-                </form>
+    <!-- SECCIÓN DE AUTENTICACIÓN -->
+    <div id="authSection" class="auth-container">
+      <div class="card card-custom p-4">
+        <div class="text-center mb-3">
+          <h5 class="fw-bold text-dark mb-1">Acceso a la Plataforma</h5>
+          <p class="text-muted small">Ingrese sus credenciales de acceso institucional</p>
+        </div>
+
+        <ul class="nav nav-pills nav-justified mb-3" id="authTab">
+          <li class="nav-item">
+            <button class="nav-link active" id="login-tab" data-bs-toggle="pill" data-bs-target="#loginPane">Ingresar</button>
+          </li>
+          <li class="nav-item">
+            <button class="nav-link" id="register-tab" data-bs-toggle="pill" data-bs-target="#registerPane">Nuevo Usuario</button>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <!-- LOGIN -->
+          <div class="tab-pane fade show active" id="loginPane">
+            <form onsubmit="handleLogin(event)">
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">Usuario</label>
+                <input type="text" id="loginUser" class="form-control" placeholder="Ej: admin" required>
               </div>
-              <div class="tab-pane fade" id="registerPane">
-                <form onsubmit="handleRegister(event)">
-                  <div class="mb-3">
-                    <label class="form-label">Nuevo Usuario</label>
-                    <input type="text" id="regUser" class="form-control" required>
-                  </div>
-                  <div class="mb-3">
-                    <label class="form-label">Contraseña</label>
-                    <input type="password" id="regPass" class="form-control" required>
-                  </div>
-                  <button type="submit" class="btn btn-success w-100">Registrarse</button>
-                </form>
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">Contraseña</label>
+                <input type="password" id="loginPass" class="form-control" placeholder="••••••••" required>
               </div>
-            </div>
+              <button type="submit" class="btn btn-corporate w-100 py-2" id="btnLogin">
+                <span id="spinLogin" class="spinner-border spinner-border-sm d-none me-1"></span> Iniciar Sesión
+              </button>
+            </form>
+          </div>
+
+          <!-- REGISTRO -->
+          <div class="tab-pane fade" id="registerPane">
+            <form onsubmit="handleRegister(event)">
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">Usuario</label>
+                <input type="text" id="regUser" class="form-control" required>
+              </div>
+              <div class="mb-3">
+                <label class="form-label small fw-semibold">Contraseña</label>
+                <input type="password" id="regPass" class="form-control" required>
+              </div>
+              <button type="submit" class="btn btn-success w-100 py-2" id="btnRegister">
+                <span id="spinReg" class="spinner-border spinner-border-sm d-none me-1"></span> Registrarse
+              </button>
+            </form>
           </div>
         </div>
       </div>
@@ -78,73 +181,78 @@
 
     <!-- SECCIÓN APP PRINCIPAL -->
     <div id="appSection" class="d-none">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h4>Inventario de Materiales</h4>
+      <div class="d-flex flex-wrap justify-content-between align-items-center pb-3 mb-4 border-bottom">
         <div>
-          <button class="btn btn-outline-secondary me-2" onclick="fetchInventory()"><i class="bi bi-arrow-clockwise"></i> Sincronizar</button>
-          <button class="btn btn-danger me-2" onclick="generatePDF()"><i class="bi bi-file-earmark-pdf"></i> Descargar PDF</button>
-          <button class="btn btn-primary" onclick="openItemModal()"><i class="bi bi-plus-lg"></i> Agregar Material</button>
+          <h4 class="fw-bold mb-0">Inventario General</h4>
+          <span class="text-muted small">Gestión y control de elementos de laboratorio y equipos</span>
+        </div>
+        <div class="mt-2 mt-md-0">
+          <button class="btn btn-outline-secondary me-2" onclick="fetchInventory()"><i class="bi bi-arrow-repeat"></i> Sincronizar</button>
+          <button class="btn btn-outline-danger me-2" onclick="generatePDF()"><i class="bi bi-file-earmark-pdf"></i> Reporte PDF</button>
+          <button class="btn btn-corporate" onclick="openItemModal()"><i class="bi bi-plus-circle me-1"></i> Agregar Material</button>
         </div>
       </div>
 
+      <!-- GRID DE ELEMENTOS -->
       <div class="row" id="inventoryGrid"></div>
     </div>
 
   </div>
 
-  <!-- MODAL PARA REGISTRAR/EDITAR -->
+  <!-- MODAL PARA REGISTRAR/EDITAR MATERIAL -->
   <div class="modal fade" id="itemModal" tabindex="-1">
     <div class="modal-dialog">
-      <div class="modal-content">
+      <div class="modal-content card-custom">
         <div class="modal-header">
-          <h5 class="modal-title" id="itemModalLabel">Agregar Material</h5>
+          <h5 class="modal-title fw-bold" id="itemModalLabel">Agregar Material</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
           <form id="itemForm">
             <input type="hidden" id="itemId">
             <div class="mb-2">
-              <label class="form-label">Nombre del Material</label>
+              <label class="form-label small fw-semibold">Nombre del Material</label>
               <input type="text" id="itemName" class="form-control" required>
             </div>
             <div class="mb-2">
-              <label class="form-label">Descripción</label>
+              <label class="form-label small fw-semibold">Descripción</label>
               <textarea id="itemDesc" class="form-control" rows="2"></textarea>
             </div>
             <div class="row">
               <div class="col-6 mb-2">
-                <label class="form-label">Cantidad</label>
+                <label class="form-label small fw-semibold">Cantidad Inicial</label>
                 <input type="number" id="itemQty" class="form-control" min="0" required>
               </div>
               <div class="col-6 mb-2">
-                <label class="form-label">Tipo</label>
-                <input type="text" id="itemType" class="form-control" placeholder="Ej: Consumibles, Equipos" required>
+                <label class="form-label small fw-semibold">Categoría / Tipo</label>
+                <input type="text" id="itemType" class="form-control" placeholder="Ej: Electrónica" required>
               </div>
             </div>
             <div class="mb-2">
-              <label class="form-label">Ubicación</label>
-              <input type="text" id="itemLoc" class="form-control" required>
+              <label class="form-label small fw-semibold">Ubicación Física</label>
+              <input type="text" id="itemLoc" class="form-control" placeholder="Ej: Estante B1" required>
             </div>
             <div class="mb-3">
-              <label class="form-label">Link Foto (URL)</label>
-              <input type="url" id="itemFoto" class="form-control" placeholder="https://ejemplo.com/imagen.jpg">
+              <label class="form-label small fw-semibold">Enlace de Fotografía (URL)</label>
+              <input type="url" id="itemFoto" class="form-control" placeholder="https://...">
             </div>
-            <button type="submit" class="btn btn-primary w-100">Guardar</button>
+            <button type="submit" class="btn btn-corporate w-100">Guardar Registro</button>
           </form>
         </div>
       </div>
     </div>
   </div>
 
-  <footer class="footer text-center py-3 border-top mt-auto">
+  <!-- FOOTER -->
+  <footer class="footer py-3 text-center">
     <div class="container">
-      Desarrollador: <strong>ING FERNANDO BEVANS</strong> | GESTOR INVENTARIO CEDNAV
+      <span>Desarrollador: <strong>ING FERNANDO BEVANS</strong> | GESTOR INVENTARIO CEDNAV</span>
     </div>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    // REEMPLAZAR CON TU URL DE DESPLIEGUE DE APPS SCRIPT
+    // URL DE TU DESPLIEGUE DE GOOGLE APPS SCRIPT
     const API_URL = "https://script.google.com/macros/s/TU_DEPLOYMENT_ID_AQUI/exec";
 
     let currentUser = null;
@@ -155,12 +263,11 @@
       bootstrapModal = new bootstrap.Modal(document.getElementById('itemModal'));
     });
 
-    async function apiPost(payload) {
-      const response = await fetch(API_URL, {
-        method: "POST",
-        headers: { "Content-Type": "text/plain;charset=utf-8" },
-        body: JSON.stringify(payload)
-      });
+    // Petición HTTP adaptada para evitar problemas de CORS/Redirección
+    async function apiCall(action, dataObj = {}) {
+      const payload = encodeURIComponent(JSON.stringify(dataObj));
+      const url = `${API_URL}?action=${action}&data=${payload}`;
+      const response = await fetch(url, { method: "GET", redirect: "follow" });
       return await response.json();
     }
 
@@ -168,13 +275,20 @@
       e.preventDefault();
       const user = document.getElementById("loginUser").value;
       const pass = document.getElementById("loginPass").value;
-      
-      const res = await apiPost({ action: "login", user: user, pass: pass });
-      if (res.success) {
-        currentUser = { name: res.user, role: res.role };
-        initDashboard();
-      } else {
-        alert(res.message);
+
+      setLoading("btnLogin", "spinLogin", true);
+      try {
+        const res = await apiCall("login", { user: user, pass: pass });
+        if (res.success) {
+          currentUser = { name: res.user, role: res.role };
+          initDashboard();
+        } else {
+          alert(res.message);
+        }
+      } catch (err) {
+        alert("Error de conexión con la base de datos.");
+      } finally {
+        setLoading("btnLogin", "spinLogin", false);
       }
     }
 
@@ -183,11 +297,18 @@
       const user = document.getElementById("regUser").value;
       const pass = document.getElementById("regPass").value;
 
-      const res = await apiPost({ action: "registerUser", user: user, pass: pass });
-      alert(res.message);
-      if (res.success) {
-        document.getElementById("regUser").value = "";
-        document.getElementById("regPass").value = "";
+      setLoading("btnRegister", "spinReg", true);
+      try {
+        const res = await apiCall("registerUser", { user: user, pass: pass });
+        alert(res.message);
+        if (res.success) {
+          document.getElementById("regUser").value = "";
+          document.getElementById("regPass").value = "";
+        }
+      } catch (err) {
+        alert("Error al registrar usuario.");
+      } finally {
+        setLoading("btnRegister", "spinReg", false);
       }
     }
 
@@ -195,7 +316,7 @@
       document.getElementById("authSection").classList.add("d-none");
       document.getElementById("appSection").classList.remove("d-none");
       document.getElementById("navUserContext").classList.remove("d-none");
-      document.getElementById("userInfoDisplay").innerHTML = `<i class="bi bi-person-circle"></i> ${currentUser.name} (${currentUser.role})`;
+      document.getElementById("userInfoDisplay").innerHTML = `<i class="bi bi-person-badge me-1"></i> ${currentUser.name} <span class="badge bg-light text-dark ms-1">${currentUser.role}</span>`;
       fetchInventory();
     }
 
@@ -204,13 +325,19 @@
       document.getElementById("authSection").classList.remove("d-none");
       document.getElementById("appSection").classList.add("d-none");
       document.getElementById("navUserContext").classList.add("d-none");
+      document.getElementById("loginUser").value = "";
+      document.getElementById("loginPass").value = "";
     }
 
     async function fetchInventory() {
-      const res = await apiPost({ action: "getInventory" });
-      if (res.success) {
-        inventoryData = res.data;
-        renderInventory();
+      try {
+        const res = await apiCall("getInventory");
+        if (res.success) {
+          inventoryData = res.data;
+          renderInventory();
+        }
+      } catch (err) {
+        console.error("Error al obtener el inventario", err);
       }
     }
 
@@ -218,33 +345,45 @@
       const grid = document.getElementById("inventoryGrid");
       grid.innerHTML = "";
 
+      if (inventoryData.length === 0) {
+        grid.innerHTML = `<div class="col-12 text-center py-5 text-muted"><i class="bi bi-inbox fs-1"></i><p>No hay registros disponibles en el inventario.</p></div>`;
+        return;
+      }
+
       inventoryData.forEach(item => {
         const isSuper = currentUser.role === 'Superusuario';
-        const imgPlaceholder = "https://via.placeholder.com/300x160?text=Sin+Imagen";
+        const imgPlaceholder = "https://via.placeholder.com/300x170?text=Sin+Fotografia";
 
         const card = document.createElement("div");
-        card.className = "col-md-4 mb-4";
+        card.className = "col-md-6 col-lg-4 mb-4";
         card.innerHTML = `
-          <div class="card h-100 shadow-sm position-relative">
-            <span class="badge bg-secondary badge-role">${item.tipo}</span>
-            <img src="${item.fotoUrl || imgPlaceholder}" class="card-img-top" onerror="this.src='${imgPlaceholder}'" alt="${item.nombre}">
-            <div class="card-body">
-              <h5 class="card-title">${item.nombre}</h5>
-              <p class="card-text text-muted small">${item.descripcion}</p>
-              <ul class="list-group list-group-flush mb-3">
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                  <strong>Cantidad:</strong>
-                  <span>
-                    <button class="btn btn-sm btn-outline-danger py-0" onclick="changeQty(${item.id}, -1)">-</button>
-                    <strong class="mx-2">${item.cantidad}</strong>
-                    <button class="btn btn-sm btn-outline-success py-0" onclick="changeQty(${item.id}, 1)">+</button>
-                  </span>
-                </li>
-                <li class="list-group-item"><strong>Ubicación:</strong> ${item.ubicacion}</li>
-              </ul>
-              <div class="d-flex justify-content-between">
-                ${isSuper ? `<button class="btn btn-sm btn-warning" onclick='editItem(${JSON.stringify(item)})'><i class="bi bi-pencil"></i> Editar</button>` : '<span></span>'}
-                ${isSuper ? `<button class="btn btn-sm btn-danger" onclick="deleteItem(${item.id})"><i class="bi bi-trash"></i> Eliminar</button>` : ''}
+          <div class="card card-custom h-100">
+            <div class="position-relative">
+              <img src="${item.fotoUrl || imgPlaceholder}" class="card-img-top" onerror="this.src='${imgPlaceholder}'" alt="${item.nombre}">
+              <span class="badge badge-type position-absolute top-0 end-0 m-2">${item.tipo}</span>
+            </div>
+            <div class="card-body d-flex flex-column">
+              <h6 class="fw-bold text-dark mb-1">${item.nombre}</h6>
+              <p class="text-muted small mb-3 flex-grow-1">${item.descripcion || 'Sin descripción disponible.'}</p>
+              
+              <div class="bg-light p-2 rounded mb-3">
+                <div class="d-flex justify-content-between align-items-center mb-1">
+                  <span class="small text-muted fw-semibold">Cantidad:</span>
+                  <div>
+                    <button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="changeQty(${item.id}, -1)">-</button>
+                    <span class="fw-bold mx-2">${item.cantidad}</span>
+                    <button class="btn btn-sm btn-outline-secondary py-0 px-2" onclick="changeQty(${item.id}, 1)">+</button>
+                  </div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="small text-muted fw-semibold">Ubicación:</span>
+                  <span class="small fw-semibold text-dark">${item.ubicacion}</span>
+                </div>
+              </div>
+
+              <div class="d-flex justify-content-between pt-2 border-top">
+                ${isSuper ? `<button class="btn btn-sm btn-outline-primary" onclick='editItem(${JSON.stringify(item)})'><i class="bi bi-pencil"></i> Editar</button>` : '<span></span>'}
+                ${isSuper ? `<button class="btn btn-sm btn-outline-danger" onclick="deleteItem(${item.id})"><i class="bi bi-trash"></i> Eliminar</button>` : ''}
               </div>
             </div>
           </div>
@@ -284,7 +423,7 @@
         fotoUrl: document.getElementById("itemFoto").value
       };
 
-      const res = await apiPost({ action: "saveItem", item: itemData, role: currentUser.role });
+      const res = await apiCall("saveItem", { item: itemData, role: currentUser.role });
       alert(res.message);
       if (res.success) {
         bootstrapModal.hide();
@@ -293,7 +432,7 @@
     });
 
     async function changeQty(id, delta) {
-      const res = await apiPost({ action: "updateQuantity", id: id, delta: delta });
+      const res = await apiCall("updateQuantity", { id: id, delta: delta });
       if (res.success) {
         fetchInventory();
       } else {
@@ -302,8 +441,8 @@
     }
 
     async function deleteItem(id) {
-      if (!confirm("¿Está seguro de eliminar este elemento?")) return;
-      const res = await apiPost({ action: "deleteItem", id: id, role: currentUser.role });
+      if (!confirm("¿Confirma la eliminación definitiva del elemento?")) return;
+      const res = await apiCall("deleteItem", { id: id, role: currentUser.role });
       alert(res.message);
       if (res.success) fetchInventory();
     }
@@ -312,11 +451,11 @@
       const { jsPDF } = window.jspdf;
       const doc = new jsPDF();
 
-      doc.setFontSize(16);
+      doc.setFontSize(15);
       doc.text("GESTOR INVENTARIO CEDNAV", 14, 15);
-      doc.setFontSize(10);
-      doc.text("Reporte General de Inventario", 14, 22);
-      doc.text(`Fecha: ${new Date().toLocaleDateString()} | Desarrollador: ING FERNANDO BEVANS`, 14, 28);
+      doc.setFontSize(9);
+      doc.text("Reporte Control de Inventario", 14, 22);
+      doc.text(`Fecha de emisión: ${new Date().toLocaleDateString()} | Desarrollador: ING FERNANDO BEVANS`, 14, 27);
 
       const tableRows = inventoryData.map(item => [
         item.id,
@@ -328,14 +467,26 @@
       ]);
 
       doc.autoTable({
-        head: [['ID', 'Nombre', 'Descripción', 'Cant.', 'Ubicación', 'Tipo']],
+        head: [['ID', 'Nombre', 'Descripción', 'Cant.', 'Ubicación', 'Categoría']],
         body: tableRows,
-        startY: 34,
-        theme: 'grid',
-        headStyles: { fillColor: [33, 37, 41] }
+        startY: 32,
+        theme: 'stripe',
+        headStyles: { fillColor: [15, 37, 55] }
       });
 
       doc.save(`Inventario_CEDNAV_${new Date().toISOString().slice(0,10)}.pdf`);
+    }
+
+    function setLoading(btnId, spinId, isLoading) {
+      const btn = document.getElementById(btnId);
+      const spin = document.getElementById(spinId);
+      if (isLoading) {
+        btn.disabled = true;
+        spin.classList.remove("d-none");
+      } else {
+        btn.disabled = false;
+        spin.classList.add("d-none");
+      }
     }
   </script>
 </body>
